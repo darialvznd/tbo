@@ -16,10 +16,10 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
     if (event is CategoryLoadEvent) {
       yield CategoryLoadingState();
       try {
-      //  int id = event.idCategoryType;
-        final List<Category> taskList = await repository.load();
-        if (taskList != null && taskList.isNotEmpty) {
-          yield CategoryLoadedState(taskList);
+        //  int id = event.idCategoryType;
+        final List<Category> categoryList = await repository.load();
+        if (categoryList != null && categoryList.isNotEmpty) {
+          yield CategoryLoadedState(categoryList);
         } else {
           yield CategoryEmptyState();
         }

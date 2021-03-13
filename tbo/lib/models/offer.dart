@@ -45,9 +45,7 @@ class Offer {
 
     List<String> _picturesUrl =
         (jsonEncode(priceObjsJson) as List<dynamic>).cast<String>();
-    // List<String> _price = priceObjsJson
-    //     .map((priceJson) => String. fromJson(priceJson))
-    //     .toList();
+  
 
     return Offer(
       json['id'],
