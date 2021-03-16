@@ -7,14 +7,14 @@ import '../blocs/offer/offer_state.dart';
 import '../models/offer.dart';
 import '../offer_list_item.dart';
 
-class OfferBody extends StatefulWidget {
+class OfferListPage extends StatefulWidget {
   @override
-  _OfferBodyState createState() => _OfferBodyState();
+  _OfferListPageState createState() => _OfferListPageState();
 }
 
 OfferBloc offerListBloc;
 
-class _OfferBodyState extends State<OfferBody> {
+class _OfferListPageState extends State<OfferListPage> {
   final List<Offer> _offers = [];
 
   final ScrollController _scrollController = ScrollController();

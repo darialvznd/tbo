@@ -1,10 +1,11 @@
 import 'dart:convert';
 
 import 'package:tbo_zavyalova/models/parameter.dart';
+import 'package:tbo_zavyalova/repositories/category_repository.dart';
 
 class Offer {
-  final int id;
-  final int categoryId;
+  final String id;
+  final String categoryName;
   final String description;
   final String model;
   final DateTime modifiedTime; // since 1970.01.01
@@ -17,10 +18,11 @@ class Offer {
   final String url;
   final String vendor;
   final String vendorCode;
-
+  final String currency;
   Offer({
+    this.currency,
     this.id,
-    this.categoryId,
+    this.categoryName,
     this.description,
     this.model,
     this.modifiedTime,
@@ -36,23 +38,25 @@ class Offer {
   });
 
   factory Offer.fromJson(Map<String, dynamic> json) {
+    CategoryRepository categories;
     var paramObjsJson = json['params'] as List;
     List<Parameter> _params = paramObjsJson
         .map((paramJson) => Parameter.fromJson(paramJson))
         .toList();
     var picturesObjsJson = json['pictures'] as List;
-    List<String> _picturesUrl = picturesObjsJson.map((e) => e.toString()).toList();
+    List<String> _picturesUrl =
+        picturesObjsJson.map((e) => e.toString()).toList();
+    //String categoryName = categories.findWhere(json['categoryId']);
 
-    // List<String> _picturesUrl =
-    //     (jsonEncode(priceObjsJson) as List<dynamic>).cast<String>();
+    String categoryName = "Заменить категорию";
 
     return Offer(
       name: json['name'],
-      id: int.parse(json['id']), categoryId: json['categoryId'],
+      id: json['id'], categoryName: categoryName,
       description: json['description'],
       model: json['model'],
       modifiedTime: DateTime.fromMicrosecondsSinceEpoch(json['modified_time']),
-
+      currency: json['currency'],
       picturesUrl: _picturesUrl, //как
       params: _params,
       price: json['price'],

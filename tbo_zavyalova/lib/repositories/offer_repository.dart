@@ -14,9 +14,14 @@ class OfferRepository extends ChangeNotifier {
   }
 
   Future<List<Offer>> loadByPage(int page) async {
-    final offers = await ApiService.getOffersFromPage(page: page);
+    final offers = await ApiService.getOffersFromPage(page);
     addAll(offers);
     return _items;
+  }
+
+  Future<List<Offer>> search(String term, int page) async {
+    final result = await ApiService.findOffersByWord(term, page);
+    return result;
   }
 
   void add(Offer item) {

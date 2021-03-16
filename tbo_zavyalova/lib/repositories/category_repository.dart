@@ -26,6 +26,15 @@ class CategoryRepository extends ChangeNotifier {
     //   updateDisplayedItems();
   }
 
+  String findWhere(int id) {
+    for (var item in _items) {
+      if (item.id == id) {
+        return item.name;
+      }
+    }
+    return "";
+  }
+
   void removeAll() {
     _items.clear();
     // updateDisplayedItems();

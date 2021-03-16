@@ -17,24 +17,37 @@ class ApiService {
     return offers;
   }
 
-  static Future<List<Offer>> getOffersFromPage({
+  static Future<List<Offer>> getOffersFromPage(
     int page,
-  }) async {
-    int value = page * 24;
-    var response = await http.get(url + '/offers?from=${value}&limit=1');
+  ) async {
+    int value = page * 6;
+    var response = await http.get(url + '/offers?from=${value}&limit=6');
     List<Offer> offers = [];
     String source = Utf8Decoder().convert(response.bodyBytes);
     for (var item in json.decode(source)) {
       offers.add(Offer.fromJson(item));
     }
     return offers;
-    // try {
-    //   return await http.get(
-    //     'https://api.punkapi.com/v2/beers?page=$page&per_page=$_perPage',
-    //   );
-    // } catch (e) {
-    //   return e.toString();
-    // }
+  }
+
+  static Future<List<Offer>> findOffersByWord(String term, int page) async {
+    List<Offer> offers = [];
+    int value = page * 6;
+    List<String> parametersName = ['name', 'vendor', 'vendorCode'];
+    for (int i = 0; i < parametersName.length; i++) {
+      var response = await http.get(
+          url + '/offers?${parametersName[i]}=${term}&from=${value}&limit=1');
+      if (response.statusCode == 200) {
+        String source = Utf8Decoder().convert(response.bodyBytes);
+        for (var item in json.decode(source)) {
+          offers.add(Offer.fromJson(item));
+        }
+      } else {
+        // throw Offer.fromJson(results);
+      }
+    }
+
+    return offers;
   }
 
   static Future<List<Category>> getCategories() async {
