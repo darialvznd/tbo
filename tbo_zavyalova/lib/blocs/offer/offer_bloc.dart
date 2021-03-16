@@ -16,20 +16,6 @@ class OfferBloc extends Bloc<OfferEvent, OfferState> {
 
   @override
   Stream<OfferState> mapEventToState(event) async* {
-    // if (event is OfferLoadEvent) {
-    //   yield OfferLoadingState();
-    //   try {
-    //     //  int id = event.idOfferType;
-    //     final List<Offer> offerList = await repository.load();
-    //     if (offerList != null && offerList.isNotEmpty) {
-    //       yield OfferLoadedState(offerList);
-    //     } else {
-    //       yield OfferEmptyState();
-    //     }
-    //   } catch (e) {
-    //     yield OfferErrorState();
-    //   }
-    // } else
     if (event is OfferFetchEvent) {
       yield OfferLoadingState();
       try {

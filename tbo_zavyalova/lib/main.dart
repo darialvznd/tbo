@@ -8,10 +8,12 @@ import 'package:tbo_zavyalova/blocs/offer_search/offer_search_event.dart';
 import 'package:tbo_zavyalova/blocs/offer_search/offer_search_state.dart';
 import 'package:tbo_zavyalova/element_page.dart';
 import 'package:tbo_zavyalova/offer_card.dart';
+import 'package:tbo_zavyalova/offer_info_page.dart';
 import 'package:tbo_zavyalova/repositories/category_repository.dart';
 import 'package:tbo_zavyalova/repositories/offer_repository.dart';
 import 'package:tbo_zavyalova/screens/offers_list_page.dart';
 import 'package:tbo_zavyalova/serach/search_form.dart';
+import 'package:tbo_zavyalova/styles/style.dart';
 
 void main() {
   runApp(MyApp());
@@ -36,15 +38,42 @@ class MyApp extends StatelessWidget {
                 OfferSearchBloc(offerRepository: OfferRepository())),
       ],
       child: MaterialApp(
+          theme: AppTheme.theme,
           title: 'TBO',
           //   theme: AppColor.getThemeData(),
           initialRoute: '/',
           routes: {
-            '/': (context) => OfferListPage(),
+            '/': (context) => OfferInfoPage(),
           }
           //   onGenerateRoute: AppRouter.generateRoute,
           // initialRoute: '/TaskInfoPage',
           ),
     );
+  }
+}
+
+class OfferBlocObserver extends BlocObserver {
+  @override
+  void onEvent(Bloc bloc, Object event) {
+    print(event);
+    super.onEvent(bloc, event);
+  }
+
+  @override
+  void onChange(Cubit cubit, Change change) {
+    print(change);
+    super.onChange(cubit, change);
+  }
+
+  @override
+  void onTransition(Bloc bloc, Transition transition) {
+    print(transition);
+    super.onTransition(bloc, transition);
+  }
+
+  @override
+  void onError(Cubit cubit, Object error, StackTrace stackTrace) {
+    print('$error, $stackTrace');
+    super.onError(cubit, error, stackTrace);
   }
 }

@@ -1,7 +1,4 @@
-abstract class OfferEvent {
-  @override
-  List<Object> get props => [];
-}
+abstract class OfferEvent {}
 
 class OfferLoadEvent extends OfferEvent {
 //  final int idOfferType;
