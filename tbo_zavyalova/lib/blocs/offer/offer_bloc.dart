@@ -7,7 +7,7 @@ import 'offer_state.dart';
 
 class OfferBloc extends Bloc<OfferEvent, OfferState> {
   int page = 1;
-  bool isFetching = false;
+  // bool isFetching = false;
   final OfferRepository repository;
 
   OfferBloc({this.repository})
@@ -17,7 +17,7 @@ class OfferBloc extends Bloc<OfferEvent, OfferState> {
   @override
   Stream<OfferState> mapEventToState(event) async* {
     if (event is OfferFetchEvent) {
-      yield OfferLoadingState();
+      yield OfferLoadingState(page == 1);
       try {
         //  int id = event.idOfferType;
         final List<Offer> offerList = await repository.loadByPage(page);

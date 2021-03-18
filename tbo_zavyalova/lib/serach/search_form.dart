@@ -5,149 +5,181 @@ import 'package:tbo_zavyalova/blocs/offer_search/offer_search_event.dart';
 import 'package:tbo_zavyalova/blocs/offer_search/offer_search_state.dart';
 import 'package:tbo_zavyalova/models/offer.dart';
 import 'package:tbo_zavyalova/offer_card.dart';
+import 'package:tbo_zavyalova/offer_info_page.dart';
+import 'package:tbo_zavyalova/styles/style.dart';
 
-class SearchForm extends StatelessWidget {
+import '../offer_list_item.dart';
+
+class SearchForm extends StatefulWidget {
+  final int categoryId;
+
+  const SearchForm({Key key, this.categoryId}) : super(key: key);
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(children: [
-        SizedBox(
-          height: 30,
-        ),
-        _SearchBar(),
-        _SearchBody().key == null ? Container() : Expanded(child: _SearchBody())
-      ]),
-    );
-  }
+  _SearchFormState createState() => _SearchFormState();
 }
 
-class _SearchBar extends StatefulWidget {
-  @override
-  State<_SearchBar> createState() => _SearchBarState();
-}
+class _SearchFormState extends State<SearchForm> {
+  final List<Offer> _offers = [];
 
-class _SearchBarState extends State<_SearchBar> {
-  final _textController = TextEditingController();
   OfferSearchBloc _offerSearchBloc;
 
+  final ScrollController _scrollController = ScrollController();
   @override
   void initState() {
     super.initState();
-    _offerSearchBloc = BlocProvider.of<OfferSearchBloc>(context);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _offerSearchBloc = BlocProvider.of<OfferSearchBloc>(context);
+      _offerSearchBloc
+          .add(OfferSearchFetchEvent(categoryId: widget.categoryId));
+    });
+    _scrollController.addListener(() {
+      if (_scrollController.offset ==
+              _scrollController.position.maxScrollExtent &&
+          _offerSearchBloc.state is! SearchStateLoading) {
+        _fetchData();
+      }
+    });
   }
 
+  void _fetchData() {
+    // listViewOffset = _scrollController.offset;
+    _textController.text == ''
+        ? context
+            .read<OfferSearchBloc>()
+            .add(OfferSearchFetchEvent(categoryId: widget.categoryId))
+        : context.read<OfferSearchBloc>().add(OfferSearchFetchEvent(
+            categoryId: widget.categoryId, searchText: _textController.text));
+  }
+
+  final _textController = TextEditingController();
   @override
   void dispose() {
     _textController.dispose();
+    _textController.text = '';
     super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return TextField(
-      controller: _textController,
-      autocorrect: false,
-      // onEditingComplete: (text) {
-      //   _offerSearchBloc.add(
-      //     TextChanged(text: text),
-      //   ); },
-      onSubmitted: (text) {
-        _offerSearchBloc.add(
-          TextChanged(text: text),
-        );
-      },
-      decoration: InputDecoration(
-        prefixIcon: Icon(Icons.search),
-        suffixIcon: GestureDetector(
-          child: Icon(Icons.clear),
-          onTap: _onClearTapped,
-        ),
-        border: InputBorder.none,
-        hintText: 'Enter a search term',
-      ),
-    );
   }
 
   void _onClearTapped() {
     _textController.text = '';
-    _offerSearchBloc.add(TextChanged(text: ''));
+    _offerSearchBloc.add(TextChanged(searchText: ''));
   }
-}
-
-class _SearchBody extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<OfferSearchBloc, OfferSearchState>(
-      builder: (BuildContext context, OfferSearchState state) {
-        if (state is SearchStateEmpty) {
-          return Text('Please enter a term to begin');
-        }
-        if (state is SearchStateLoading) {
-          return CircularProgressIndicator();
-        }
-        if (state is SearchStateError) {
-          return Text(state.error);
-        }
-        if (state is SearchStateSuccess) {
-          return state.items.isEmpty
-              ? Text('No Results')
-              : Expanded(child: _SearchResults(items: state.items));
-        }
-      },
-    );
-  }
-}
-
-class _SearchResults extends StatelessWidget {
-  final List<Offer> items;
-
-  const _SearchResults({Key key, this.items}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return GridView.count(
-        crossAxisCount: 2,
-        //itemCount: ,
-        children: new List.generate(items.length, (index) {
-          return (Container(
-            color: Colors.red,
-          ));
-          //return new GridTile(child: _Offer(item: items[index]));
-        })
+    var size = MediaQuery.of(context).size;
 
-        // itemBuilder: (BuildContext context, int index) {
-        //   return _Offer(item: items[index]);
-        // },
-        );
-  }
-}
-
-class _Offer extends StatelessWidget {
-  final Offer item;
-
-  const _Offer({Key key, @required this.item}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 160,
-      width: MediaQuery.of(context).size.width - 35,
-      child: OfferCard(
-        offer: item,
+    /*24 is for notification bar on Android*/
+    final double itemHeight = (size.height - kToolbarHeight - 100) / 2;
+    final double itemWidth = size.width / 2 - 30;
+    return SafeArea(
+      child: Scaffold(
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 19, vertical: 15),
+          child: Container(
+            height: MediaQuery.of(context).size.height,
+            child: Column(children: [
+              Container(
+                decoration: BoxDecoration(
+                  color: AppColor.onPrimary,
+                  borderRadius: BorderRadius.circular(4),
+                  boxShadow: [
+                    BoxShadow(
+                        color: Color.fromRGBO(0, 0, 0, 0.2),
+                        blurRadius: 3.0,
+                        offset: Offset(0.0, 1.0)),
+                  ],
+                ),
+                height: 40,
+                child: TextField(
+                  controller: _textController,
+                  autocorrect: false,
+                  onSubmitted: (text) {
+                    _offers.clear();
+                    _offerSearchBloc.add(
+                      TextChanged(
+                          searchText: text, categoryId: widget.categoryId),
+                    );
+                  },
+                  decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.search),
+                    suffixIcon: GestureDetector(
+                      child: Icon(Icons.clear),
+                      onTap: _onClearTapped,
+                    ),
+                    border: InputBorder.none,
+                    hintText: 'Товар, бренд или артикул',
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 15,
+              ),
+              //  _SearchBar(),
+              BlocConsumer<OfferSearchBloc, OfferSearchState>(
+                listener: (context, state) {
+                  if (state is SearchStateSuccess) {
+                    //  _offers.clear();
+                    _offers.addAll(state.items);
+                    if (_scrollController.hasClients) {}
+                    Scaffold.of(context).hideCurrentSnackBar();
+                  }
+                },
+                builder: (context, state) {
+                  if (state is SearchStateEmpty && _offers.isEmpty) {
+                    return Text('В данном разделе информация отсутствует');
+                  } else if (state is SearchStateLoading &&
+                      state.showProgressBar) {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (state is SearchStateError && _offers.isEmpty) {
+                    return Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        IconButton(
+                          color: Colors.red,
+                          onPressed: () {
+                            _fetchData();
+                          },
+                          icon: Icon(Icons.refresh),
+                        ),
+                        const SizedBox(height: 15),
+                        Text('Ошибка', textAlign: TextAlign.center),
+                      ],
+                    );
+                  }
+                  return Expanded(
+                    child: GridView.count(
+                      crossAxisCount: 2,
+                      childAspectRatio: (itemWidth / itemHeight),
+                      controller: _scrollController,
+                      children: _offers
+                          .map((item) => InkWell(
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(0, 0, 0, 5),
+                                  child: OfferListItem(item),
+                                ),
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => OfferInfoPage(
+                                              offer: item,
+                                            )),
+                                  );
+                                },
+                              ))
+                          .toList(),
+                    ),
+                  );
+                },
+              )
+            ]),
+          ),
+        ),
       ),
-      // ListTile(
-
-      //   leading: Text(item.description),
-      //   // CircleAvatar(
-      //   //   child: Image.network(item.description),
-      //   // ),
-      //   title: Text(item.name),
-      //   // onTap: () async {
-      //   //   if (await canLaunch(item.htmlUrl)) {
-      //   //     await launch(item.htmlUrl);
-      //   //   }
-      //   // },
-      // ),
     );
   }
 }

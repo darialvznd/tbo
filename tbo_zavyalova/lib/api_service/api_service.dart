@@ -17,11 +17,14 @@ class ApiService {
     return offers;
   }
 
-  static Future<List<Offer>> getOffersFromPage(
-    int page,
-  ) async {
+  static Future<List<Offer>> getOffersFromPage(int page,
+      {int categoryId}) async {
     int value = page * 6;
-    var response = await http.get(url + '/offers?from=${value}&limit=6');
+    var response;
+    (categoryId == null)
+        ? response = await http.get(url + '/offers?from=${value}&limit=6')
+        : response = await http.get(
+            url + '/offers?categoryId=${categoryId}&from=${value}&limit=6');
     List<Offer> offers = [];
     String source = Utf8Decoder().convert(response.bodyBytes);
     for (var item in json.decode(source)) {
@@ -30,24 +33,43 @@ class ApiService {
     return offers;
   }
 
-  static Future<List<Offer>> findOffersByWord(String term, int page) async {
-    List<Offer> offers = [];
-    int value = page * 6;
-    List<String> parametersName = ['name', 'vendor', 'vendorCode'];
-    for (int i = 0; i < parametersName.length; i++) {
-      var response = await http.get(
-          url + '/offers?${parametersName[i]}=${term}&from=${value}&limit=1');
-      if (response.statusCode == 200) {
-        String source = Utf8Decoder().convert(response.bodyBytes);
-        for (var item in json.decode(source)) {
-          offers.add(Offer.fromJson(item));
-        }
-      } else {
-        // throw Offer.fromJson(results);
-      }
-    }
+  static Future<List<Offer>> findOffersByWord(int page,
+      {String term, int categoryId}) async {
+    int value = page * 12;
+    if (term != null) {
+      List<Offer> offers = [];
 
-    return offers;
+      List<String> parametersName = ['name', 'vendor', 'vendorCode'];
+      for (int i = 0; i < parametersName.length; i++) {
+        var response;
+        (categoryId == null)
+            ? response = await http.get(url +
+                '/offers?${parametersName[i]}=${term}&from=${value}&limit=12')
+            : response = await http.get(url +
+                '/offers?categoryId=${categoryId}&${parametersName[i]}=${term}&from=${value}&limit=12');
+        if (response.statusCode == 200) {
+          String source = Utf8Decoder().convert(response.bodyBytes);
+          for (var item in json.decode(source)) {
+            offers.add(Offer.fromJson(item));
+          }
+        } else {
+          // throw Offer.fromJson(results);
+        }
+      }
+      return offers;
+    } else {
+      var response;
+      (categoryId == null)
+          ? response = await http.get(url + '/offers?from=${value}&limit=12')
+          : response = await http.get(
+              url + '/offers?categoryId=${categoryId}&from=${value}&limit=12');
+      List<Offer> offers = [];
+      String source = Utf8Decoder().convert(response.bodyBytes);
+      for (var item in json.decode(source)) {
+        offers.add(Offer.fromJson(item));
+      }
+      return offers;
+    }
   }
 
   static Future<List<Category>> getCategories() async {

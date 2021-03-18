@@ -43,30 +43,49 @@ class _OfferCardState extends State<OfferCard> {
             Container(
               height: 200,
               child: Stack(children: [
-                Image.network(
-                  widget.offer.picturesUrl[0],
-                  fit: BoxFit.fitHeight,
+                Center(
+                  child: Image.network(
+                    widget.offer.picturesUrl[0],
+                    fit: BoxFit.fitWidth,
+                  ),
                 ),
                 Align(
-                    alignment: Alignment.topRight,
-                    child: Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: InkWell(
-                        child: Icon(
-                          _liked
-                              ? Icons.favorite_outlined
-                              : Icons.favorite_border,
-                          color: _liked
-                              ? AppColor.primary
-                              : AppColor.onSurfaceMediumEmphasis,
-                        ),
-                        onTap: () {
-                          setState(() {
-                            _liked = !_liked;
-                          });
-                        },
+                  alignment: Alignment.topRight,
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: InkWell(
+                      child: Icon(
+                        _liked
+                            ? Icons.favorite_outlined
+                            : Icons.favorite_border,
+                        color: _liked
+                            ? AppColor.primary
+                            : AppColor.onSurfaceMediumEmphasis,
                       ),
-                    ))
+                      onTap: () {
+                        setState(() {
+                          _liked = !_liked;
+                        });
+                      },
+                    ),
+                  ),
+                ),
+                if (widget.offer.oldPrice != null &&
+                    widget.offer.oldPrice < widget.offer.price)
+                  Align(
+                    alignment: Alignment.bottomLeft,
+                    child: Container(
+                      color: AppColor.lowerPrice,
+                      height: 12,
+                      child: Padding(
+                        padding: const EdgeInsets.all(1.0),
+                        child: Text(
+                          "Цена снижена".toLowerCase(),
+                          style: AppTextStyle.state,
+                        ),
+                      ),
+                    ),
+                  )
               ]),
             ),
             // Divider(
@@ -80,11 +99,10 @@ class _OfferCardState extends State<OfferCard> {
                 children: [
                   Text(
                     widget.offer.price.toString() +
-                                " " +
-                                (widget.offer.currency !=
-                            null
-                        ? widget.offer.currency
-                        : "RUB"),
+                        " " +
+                        (widget.offer.currency != null
+                            ? widget.offer.currency
+                            : "RUB"),
                     style: AppTextStyle.price,
                   ),
                   Text(

@@ -1,17 +1,25 @@
 import 'package:equatable/equatable.dart';
 
-abstract class OfferSearchEvent extends Equatable {
+class OfferSearchEvent extends Equatable {
   OfferSearchEvent();
 }
 
 class TextChanged extends OfferSearchEvent {
-  final String text;
-
-  TextChanged({this.text});
-
+  final int categoryId;
+  final String searchText;
+  TextChanged({this.categoryId, this.searchText});
   @override
-  List<Object> get props => [text];
-
+  List<Object> get props => [searchText];
   @override
-  String toString() => 'TextChanged { text: $text }';
+  String toString() => 'TextChanged { text: $searchText }';
+}
+
+class OfferSearchLoadEvent extends OfferSearchEvent {
+  OfferSearchLoadEvent();
+}
+
+class OfferSearchFetchEvent extends OfferSearchEvent {
+  final int categoryId;
+  final String searchText;
+  OfferSearchFetchEvent({this.categoryId, this.searchText});
 }

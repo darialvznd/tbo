@@ -1,5 +1,7 @@
 import 'dart:convert';
-
+import 'package:tbo_zavyalova/get_it.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tbo_zavyalova/get_it.dart';
 import 'package:tbo_zavyalova/models/parameter.dart';
 import 'package:tbo_zavyalova/repositories/category_repository.dart';
 
@@ -36,9 +38,9 @@ class Offer {
     this.vendorCode,
     this.oldPrice,
   });
-
+  
   factory Offer.fromJson(Map<String, dynamic> json) {
-    CategoryRepository categories;
+    CategoryRepository _categories = getIt();
     var paramObjsJson = json['params'] as List;
     List<Parameter> _params = paramObjsJson
         .map((paramJson) => Parameter.fromJson(paramJson))
@@ -46,9 +48,11 @@ class Offer {
     var picturesObjsJson = json['pictures'] as List;
     List<String> _picturesUrl =
         picturesObjsJson.map((e) => e.toString()).toList();
-    //String categoryName = categories.findWhere(json['categoryId']);
 
-    String categoryName = "Заменить категорию";
+    String categoryName = _categories.findWhere(json['categoryId']);
+
+    // String categoryName =
+    //  "Заменить категорию";
 
     return Offer(
       name: json['name'],

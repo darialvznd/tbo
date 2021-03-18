@@ -32,6 +32,8 @@ dependencies:
   equatable: ^0.1.0
   carousel_slider: ^3.0.0
   url_launcher: ^5.7.10
+  get_it: ^5.0.6
+  fluttertoast: ^7.1.6
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -9,37 +9,53 @@ import 'package:tbo_zavyalova/repositories/offer_repository.dart';
 
 class OfferSearchBloc extends Bloc<OfferSearchEvent, OfferSearchState> {
   final OfferRepository offerRepository;
-  int page = 1;
-  bool isFetching = false;
+  int fetchPage = 1;
+  int searchPage = 1;
   OfferSearchBloc({@required this.offerRepository}) : super(null);
 
-  @override
-  void onTransition(Transition<OfferSearchEvent, OfferSearchState> transition) {
-    print(transition);
-    super.onTransition(transition);
-  }
+  // @override
+  // void onTransition(Transition<OfferSearchEvent, OfferSearchState> transition) {
+  //   print(transition);
+  //   super.onTransition(transition);
+  // }
 
-  @override
-  OfferSearchState get initialState => SearchStateEmpty();
+  // @override
+  // OfferSearchState get initialState => SearchStateEmpty();
 
   @override
   Stream<OfferSearchState> mapEventToState(
     OfferSearchEvent event,
   ) async* {
+    if (event is OfferSearchFetchEvent) {
+      yield SearchStateLoading(fetchPage == 1);
+      try {
+        final offerList = await offerRepository.search(fetchPage,
+            categoryId: event.categoryId, term: event.searchText);
+        if (offerList != null && offerList.isNotEmpty) {
+          yield SearchStateSuccess(offerList);
+          fetchPage++;
+        } else {
+          yield SearchStateEmpty();
+        }
+      } catch (e) {
+        yield SearchStateError('something went wrong');
+      }
+    }
     if (event is TextChanged) {
-      final String searchTerm = event.text;
+      final String searchTerm = event.searchText;
       if (searchTerm.isEmpty) {
         yield SearchStateEmpty();
       } else {
-        yield SearchStateLoading();
+        yield SearchStateLoading(searchPage == 1);
         try {
-          final results = await offerRepository.search(searchTerm, page);
+          final results = await offerRepository.search(searchPage,
+              term: searchTerm, categoryId: event.categoryId);
           yield SearchStateSuccess(results);
-          page++;
+          //  searchPage++;
         } catch (error) {
           yield SearchStateError('something went wrong');
         }
       }
-    }
+    } else {}
   }
 }
