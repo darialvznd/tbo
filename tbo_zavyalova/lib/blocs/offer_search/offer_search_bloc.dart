@@ -13,15 +13,6 @@ class OfferSearchBloc extends Bloc<OfferSearchEvent, OfferSearchState> {
   int searchPage = 1;
   OfferSearchBloc({@required this.offerRepository}) : super(null);
 
-  // @override
-  // void onTransition(Transition<OfferSearchEvent, OfferSearchState> transition) {
-  //   print(transition);
-  //   super.onTransition(transition);
-  // }
-
-  // @override
-  // OfferSearchState get initialState => SearchStateEmpty();
-
   @override
   Stream<OfferSearchState> mapEventToState(
     OfferSearchEvent event,
@@ -51,7 +42,6 @@ class OfferSearchBloc extends Bloc<OfferSearchEvent, OfferSearchState> {
           final results = await offerRepository.search(searchPage,
               term: searchTerm, categoryId: event.categoryId);
           yield SearchStateSuccess(results);
-          //  searchPage++;
         } catch (error) {
           yield SearchStateError('something went wrong');
         }

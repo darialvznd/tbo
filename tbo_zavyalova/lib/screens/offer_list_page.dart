@@ -4,8 +4,7 @@ import 'package:tbo_zavyalova/blocs/offer_search/offer_search_bloc.dart';
 import 'package:tbo_zavyalova/blocs/offer_search/offer_search_event.dart';
 import 'package:tbo_zavyalova/blocs/offer_search/offer_search_state.dart';
 import 'package:tbo_zavyalova/models/offer.dart';
-import 'package:tbo_zavyalova/offer_card.dart';
-import 'package:tbo_zavyalova/offer_info_page.dart';
+import 'package:tbo_zavyalova/screens/offer_info_page.dart';
 import 'package:tbo_zavyalova/styles/style.dart';
 
 import '../offer_list_item.dart';
@@ -42,7 +41,6 @@ class _SearchFormState extends State<SearchForm> {
   }
 
   void _fetchData() {
-    // listViewOffset = _scrollController.offset;
     _textController.text == ''
         ? context
             .read<OfferSearchBloc>()
@@ -67,10 +65,8 @@ class _SearchFormState extends State<SearchForm> {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-
-    /*24 is for notification bar on Android*/
-    final double itemHeight = (size.height - kToolbarHeight - 100) / 2;
-    final double itemWidth = size.width / 2 - 30;
+    final double itemHeight = (size.height - kToolbarHeight - 16) / 2;
+    final double itemWidth = size.width / 2 - 15;
     return SafeArea(
       child: Scaffold(
         body: Padding(
@@ -89,25 +85,27 @@ class _SearchFormState extends State<SearchForm> {
                         offset: Offset(0.0, 1.0)),
                   ],
                 ),
-                height: 40,
-                child: TextField(
-                  controller: _textController,
-                  autocorrect: false,
-                  onSubmitted: (text) {
-                    _offers.clear();
-                    _offerSearchBloc.add(
-                      TextChanged(
-                          searchText: text, categoryId: widget.categoryId),
-                    );
-                  },
-                  decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.search),
-                    suffixIcon: GestureDetector(
-                      child: Icon(Icons.clear),
-                      onTap: _onClearTapped,
+                height: 56,
+                child: Center(
+                  child: TextField(
+                    controller: _textController,
+                    autocorrect: false,
+                    onSubmitted: (text) {
+                      _offers.clear();
+                      _offerSearchBloc.add(
+                        TextChanged(
+                            searchText: text, categoryId: widget.categoryId),
+                      );
+                    },
+                    decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.search),
+                      suffixIcon: GestureDetector(
+                        child: Icon(Icons.clear),
+                        onTap: _onClearTapped,
+                      ),
+                      border: InputBorder.none,
+                      hintText: 'Товар, бренд или артикул',
                     ),
-                    border: InputBorder.none,
-                    hintText: 'Товар, бренд или артикул',
                   ),
                 ),
               ),
@@ -152,6 +150,8 @@ class _SearchFormState extends State<SearchForm> {
                   return Expanded(
                     child: GridView.count(
                       crossAxisCount: 2,
+                      crossAxisSpacing: 25.0,
+                      mainAxisSpacing: 15,
                       childAspectRatio: (itemWidth / itemHeight),
                       controller: _scrollController,
                       children: _offers
@@ -159,7 +159,7 @@ class _SearchFormState extends State<SearchForm> {
                                 child: Padding(
                                   padding:
                                       const EdgeInsets.fromLTRB(0, 0, 0, 5),
-                                  child: OfferListItem(item),
+                                  child: Container(child: OfferListItem(item)),
                                 ),
                                 onTap: () {
                                   Navigator.push(

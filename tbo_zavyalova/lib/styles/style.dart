@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class AppColor {
-  static const Color primary = Color(0xFF6200EE);
+  static const Color primary = Color(0xFFF18C43);
   static const Color onPrimary = Color.fromRGBO(255, 255, 255, 1);
   static const Color onSurfaceHighEmphasis = Color.fromRGBO(0, 0, 0, 0.87);
   static const Color onSurfaceMediumEmphasis = Color.fromRGBO(0, 0, 0, 0.6);
@@ -41,7 +41,7 @@ class AppTextStyle {
   );
   static const TextStyle button = const TextStyle(
       letterSpacing: 1.25,
-      fontWeight: FontWeight.w500,
+      fontWeight: FontWeight.w400,
       fontSize: 24.0,
       color: AppColor.onPrimary,
       height: 1.1);
@@ -87,6 +87,7 @@ class AppTextStyle {
 class AppTheme {
   static ThemeData theme = ThemeData(
       primaryColor: AppColor.onPrimary,
+      accentColor: AppColor.primary,
       buttonTheme: ButtonThemeData(
         buttonColor: AppColor.primary,
       ));

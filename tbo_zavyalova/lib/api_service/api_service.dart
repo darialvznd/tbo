@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:tbo_zavyalova/models/category.dart';
 import 'package:tbo_zavyalova/models/offer.dart';

@@ -3,9 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tbo_zavyalova/blocs/category/category_bloc.dart';
 import 'package:tbo_zavyalova/blocs/category/category_event.dart';
 import 'package:tbo_zavyalova/blocs/category/category_state.dart';
-import 'package:tbo_zavyalova/blocs/offer_search/offer_search_event.dart';
+
 import 'package:tbo_zavyalova/models/category.dart';
-import 'package:tbo_zavyalova/serach/search_form.dart';
+import 'package:tbo_zavyalova/screens/offer_list_page.dart';
+
 import 'package:tbo_zavyalova/styles/style.dart';
 
 class CategoryListPage extends StatefulWidget {
@@ -54,10 +55,8 @@ class _CategoryListPageState extends State<CategoryListPage> {
             child: Padding(
               padding: EdgeInsets.only(left: 10),
               child: ListView.builder(
-                // padding: ,
                 itemBuilder: (context, index) => InkWell(
                   child: Container(
-                    //height: 50,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -91,8 +90,6 @@ class _CategoryListPageState extends State<CategoryListPage> {
                     );
                   },
                 ),
-                // separatorBuilder: (context, index) =>
-                //     const SizedBox(height: 20),
                 itemCount: _categories.length,
               ),
             ),

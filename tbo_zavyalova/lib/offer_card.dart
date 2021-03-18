@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:tbo_zavyalova/models/offer.dart';
-import 'package:tbo_zavyalova/models/parameter.dart';
 import 'package:tbo_zavyalova/styles/style.dart';
 
 class OfferCard extends StatefulWidget {
@@ -88,31 +87,42 @@ class _OfferCardState extends State<OfferCard> {
                   )
               ]),
             ),
-            // Divider(
-            //   height: 1,
-            //   thickness: 1,
-            // ),
             Padding(
               padding: const EdgeInsets.fromLTRB(10, 3, 10, 6),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    widget.offer.price.toString() +
-                        " " +
-                        (widget.offer.currency != null
-                            ? widget.offer.currency
-                            : "RUB"),
-                    style: AppTextStyle.price,
+                  Container(
+                    height: 20,
+                    child: Text(
+                      widget.offer.price.toString() +
+                          " " +
+                          (widget.offer.currency != null
+                              ? widget.offer.currency
+                              : "RUB"),
+                      style: AppTextStyle.price,
+                    ),
                   ),
-                  Text(
-                    widget.offer.vendor,
-                    style: AppTextStyle.companyName,
+                  Container(
+                    height: 20,
+                    child: Text(
+                      widget.offer.vendor,
+                      style: AppTextStyle.companyName,
+                    ),
                   ),
-                  //TODO категория
-                  Text(
-                    widget.offer.categoryName.toLowerCase(),
-                    style: AppTextStyle.category,
+                  Container(
+                    height: 20,
+                    child: Text(
+                      widget.offer.params.firstWhere(
+                                  (parameter) => parameter.name == 'размер') !=
+                              null
+                          ? widget.offer.params
+                              .firstWhere(
+                                  (parameter) => parameter.name == 'размер')
+                              .value
+                          : widget.offer.categoryName.toLowerCase(),
+                      style: AppTextStyle.category,
+                    ),
                   ),
                 ],
               ),

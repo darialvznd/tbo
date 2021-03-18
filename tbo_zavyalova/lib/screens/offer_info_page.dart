@@ -4,8 +4,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:tbo_zavyalova/expanded_section.dart';
 import 'package:tbo_zavyalova/styles/style.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'models/offer.dart';
-import 'models/parameter.dart';
+import '../models/offer.dart';
+import '../models/parameter.dart';
 
 class OfferInfoPage extends StatefulWidget {
   final Offer offer;
@@ -101,7 +101,8 @@ class _OfferInfoPageState extends State<OfferInfoPage> {
                         height: 1,
                       ),
                       _drawRow("Название", widget.offer.name),
-                      //_drawRow("Модель", widget.offer.),
+                      if (widget.offer.salesNotes != null)
+                        _drawRow("Дополнительно", widget.offer.salesNotes),
                       SizedBox(
                         height: 8,
                       ),
@@ -120,7 +121,6 @@ class _OfferInfoPageState extends State<OfferInfoPage> {
                                   : Icon(Icons.arrow_drop_up)),
                         ],
                       ),
-
                       _expandedSection(widget.offer.params),
                       SizedBox(
                         height: 9,
@@ -142,28 +142,31 @@ class _OfferInfoPageState extends State<OfferInfoPage> {
             ),
             Align(
               alignment: Alignment.bottomCenter,
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(4),
-                  color: AppColor.primary,
-                ),
-                width: 360,
-                height: 50,
-                child: FlatButton(
-                  child: Text(
-                    "G",
-                    style: AppTextStyle.button,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(45),
+                    color: AppColor.primary,
                   ),
-                  onPressed: () {
-                    Fluttertoast.showToast(
-                        msg: "Товар добавлен в корзину",
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.BOTTOM,
-                        timeInSecForIosWeb: 1,
-                        backgroundColor: AppColor.onPrimary,
-                        textColor: AppColor.onSurfaceMediumEmphasis,
-                        fontSize: 16.0);
-                  },
+                  width: 200,
+                  height: 50,
+                  child: FlatButton(
+                    child: Text(
+                      "в корзину".toUpperCase(),
+                      style: AppTextStyle.button,
+                    ),
+                    onPressed: () {
+                      Fluttertoast.showToast(
+                          msg: "Товар добавлен в корзину",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.BOTTOM,
+                          timeInSecForIosWeb: 1,
+                          backgroundColor: AppColor.onPrimary,
+                          textColor: AppColor.onSurfaceMediumEmphasis,
+                          fontSize: 16.0);
+                    },
+                  ),
                 ),
               ),
             ),
