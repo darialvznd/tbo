@@ -25,6 +25,14 @@ class AppTextStyle {
     letterSpacing: 1.5,
     height: 1.6,
   );
+  static const TextStyle appBarStyle = const TextStyle(
+    color: AppColor.primary,
+    fontWeight: FontWeight.w400,
+    fontSize: 18.0,
+    letterSpacing: 1.5,
+    height: 1.1,
+  );
+
   static const TextStyle price = const TextStyle(
     color: AppColor.onSurfaceHighEmphasis,
     fontWeight: FontWeight.w400,

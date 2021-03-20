@@ -19,7 +19,7 @@ class _CategoryListPageState extends State<CategoryListPage> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Категории")),
+      appBar: AppBar(title: Text("Категории".toUpperCase(), style: AppTextStyle.appBarStyle,)),
       body: BlocConsumer<CategoryBloc, CategoryState>(
         listener: (context, state) {
           if (state is CategoryLoadedState) {

@@ -29,7 +29,7 @@ class _OfferInfoPageState extends State<OfferInfoPage> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-            leading: Icon(Icons.arrow_back_ios),
+            leading: Icon(Icons.arrow_back_ios, color: AppColor.primary),
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -117,8 +117,10 @@ class _OfferInfoPageState extends State<OfferInfoPage> {
                           InkWell(
                               onTap: _toogleExpand,
                               child: !_isExpanded
-                                  ? Icon(Icons.arrow_drop_down)
-                                  : Icon(Icons.arrow_drop_up)),
+                                  ? Icon(Icons.keyboard_arrow_down_sharp,
+                                      color: AppColor.primary)
+                                  : Icon(Icons.keyboard_arrow_up_sharp,
+                                      color: AppColor.primary)),
                         ],
                       ),
                       _expandedSection(widget.offer.params),

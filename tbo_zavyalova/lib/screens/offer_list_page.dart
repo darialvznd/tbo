@@ -58,15 +58,19 @@ class _SearchFormState extends State<SearchForm> {
   }
 
   void _onClearTapped() {
-    _textController.text = '';
-    _offerSearchBloc.add(TextChanged(searchText: ''));
+    _textController.clear(); // = '';
+    _offers.clear();
+    //_offerSearchBloc.add(TextChanged(searchText: ''));
+    _fetchData();
   }
 
+  var _focusNode = FocusNode();
   @override
   Widget build(BuildContext context) {
+    // FocusScopeNode currentFocus = FocusScope.of(context);
     var size = MediaQuery.of(context).size;
-    final double itemHeight = (size.height - kToolbarHeight - 16) / 2;
-    final double itemWidth = size.width / 2 - 15;
+    final double itemHeight = (size.height - kToolbarHeight - 50) / 2;
+    final double itemWidth = size.width / 2 - 25;
     return SafeArea(
       child: Scaffold(
         body: Padding(
@@ -88,6 +92,8 @@ class _SearchFormState extends State<SearchForm> {
                 height: 56,
                 child: Center(
                   child: TextField(
+                    autofocus: false,
+                    focusNode: _focusNode,
                     controller: _textController,
                     autocorrect: false,
                     onSubmitted: (text) {
@@ -100,9 +106,15 @@ class _SearchFormState extends State<SearchForm> {
                     decoration: InputDecoration(
                       prefixIcon: Icon(Icons.search),
                       suffixIcon: GestureDetector(
-                        child: Icon(Icons.clear),
-                        onTap: _onClearTapped,
-                      ),
+                          child: Icon(Icons.clear, color: AppColor.primary),
+                          onTap: () {
+                            _onClearTapped();
+                            //FocusScope.of(context).unfocus();
+
+                            if (_focusNode.hasPrimaryFocus) {
+                              _focusNode.unfocus();
+                            }
+                          }),
                       border: InputBorder.none,
                       hintText: 'Товар, бренд или артикул',
                     ),
@@ -124,7 +136,7 @@ class _SearchFormState extends State<SearchForm> {
                 },
                 builder: (context, state) {
                   if (state is SearchStateEmpty && _offers.isEmpty) {
-                    return Text('В данном разделе информация отсутствует');
+                    return Text('Ничего не найдено');
                   } else if (state is SearchStateLoading &&
                       state.showProgressBar) {
                     return Center(
@@ -136,11 +148,11 @@ class _SearchFormState extends State<SearchForm> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         IconButton(
-                          color: Colors.red,
+                          color: AppColor.primary,
                           onPressed: () {
                             _fetchData();
                           },
-                          icon: Icon(Icons.refresh),
+                          icon: Icon(Icons.refresh, color: AppColor.primary),
                         ),
                         const SizedBox(height: 15),
                         Text('Ошибка', textAlign: TextAlign.center),
